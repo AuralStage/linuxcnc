@@ -1,0 +1,27 @@
+# simulate torch height measurement with a
+# a single-pole lowpass filter
+
+loadrt scale          names=tovolts
+loadrt lowpass        names=torch-height
+addf   tovolts        servo-thread
+addf   torch-height   servo-thread
+
+# scale: 0.1 inch --> 100 volts:
+setp   tovolts.gain   1000
+setp   tovolts.offset    0
+
+# torch-height.gain (param) sets bandwidth
+# 1000Hz --> 0.9981
+#  100Hz --> 0.4663
+#   10Hz --> 0.0609
+#    1Hz --> 0.0063
+setp torch-height.gain 0.0609
+
+#   E:zoffset   <= elsewhere (sig to axis.z.eoffset)
+net E:zoffset   => tovolts.in
+
+net t:zscaled   <= tovolts.out
+net t:zscaled   => torch-height.in
+
+#   E:feedback  => elsewhere (sig to zo.feedback)
+net E:feedback  <= torch-height.out

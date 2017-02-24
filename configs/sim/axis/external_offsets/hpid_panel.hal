@@ -1,0 +1,127 @@
+loadrt height_pid names=zo
+loadrt not        names=nota,notb
+loadrt flipflop   names=ff1
+
+#dng
+setp   zo.k      10000
+setp   zo.fnum       0
+setp   ff1.data      0
+
+addf   zo    servo-thread
+addf   nota  servo-thread
+addf   notb  servo-thread
+addf   ff1   servo-thread
+
+net E:torch-start     <= pyvcp.torch-start
+net E:torch-start     => ff1.set
+
+net E:torch-stop      <= pyvcp.torch-stop
+net E:torch-stop      => ff1.clk
+
+net E:is-off          <= nota.out
+net E:is-off          => ff1.reset
+
+net E:is-on           <= halui.machine.is-on
+net E:is-on           => zo.is-on => nota.in
+
+net E:clear           <= zo.clear
+net E:clear           => axis.z.eoffset-clear
+
+net E:offset-enable   <= zo.enable-out
+net E:offset-enable   => axis.z.eoffset-enable
+net E:offset-enable   => pyvcp.eoffset-enable
+
+net E:scale           <= zo.kreciprocal
+net E:scale           => axis.z.eoffset-scale
+ 
+net E:kcounts         <= zo.kcounts 
+net E:kcounts         => axis.z.eoffset-counts
+
+net E:active          <= motion.eoffset-active
+net E:active          => zo.active
+net E:active          => pyvcp.eoffset-active
+
+net E:limited         <= motion.eoffset-limited
+net E:limited         => pyvcp.eoffset-limited
+
+net E:paused          <= halui.program.is-paused
+net E:paused          => pyvcp.paused
+
+net E:zoffset         <= axis.z.eoffset
+#dng net E:zoffset         => pyvcp.z-offset-f
+#   E:zoffset         => elsewhere (torch_sim)
+
+#   E:feedback        <= elsewhere (torch_sim)
+net E:feedback        => pyvcp.feedback-f
+net E:feedback        => zo.feedback
+
+net E:error           <= zo.error
+
+setp zo.pgain 20
+setp zo.igain  0
+setp zo.dgain  1
+
+alias pin motion.spindle-on     torch-is-on
+alias pin motion.digital-out-00 torch-arc-ok
+alias pin motion.analog-out-00  torch-volts
+
+# spindle commands are used for torch
+# M3 --> torch on
+# M5 --> torch off
+net E:torch-enable    <= torch-is-on
+net E:torch-enable    => zo.enable-in-a
+net E:torch-enable    => pyvcp.torch-is-on
+
+# extra enables (a,b,c are anded together):
+setp zo.enable-in-b 1
+setp zo.enable-in-c 1
+
+#-------------------------------------------------
+# test dynamic response  with perturbing waveform:
+# use offset same as nominal torch-volts
+loadrt siggen  names=sig
+loadrt mux4    names=mux
+loadrt sum2    names=perturb
+
+setp   sig.frequency  0.5
+setp   sig.amplitude  5.0
+setp   sig.offset     0
+
+addf   sig.update     servo-thread
+addf   mux            servo-thread
+addf   perturb        servo-thread
+
+net E:sigenable       <= ff1.out
+net E:sigenable       => pyvcp.perturb-is-on
+net E:sigenable       => notb.in
+
+net E:sigreset        <= notb.out
+net E:sigreset        => sig.reset
+
+net E:request         <= torch-volts
+net E:request         => perturb.in0
+
+net E:mux-in0         <= sig.sine
+net E:mux-in0         <= mux.in0
+
+net E:mux-in1         <= sig.square
+net E:mux-in1         <= mux.in1
+
+net E:mux-in2         <= sig.triangle
+net E:mux-in2         <= mux.in2
+
+net E:mux-in3         <= sig.sawtooth
+net E:mux-in3         <= mux.in3
+
+#   E:sel0            <= elsewhere (sim_pin)
+net E:sel0            => mux.sel0
+
+#   E:sel1            <= elsewhere (sim_pin)
+net E:sel1            => mux.sel1
+
+net E:perturb         <= mux.out
+net E:perturb         => perturb.in1
+
+net E:command         <= perturb.out
+net E:command         => zo.command
+#-------------------------------------------------

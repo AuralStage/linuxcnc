@@ -1,0 +1,36 @@
+hpid.ini - height (Z axis) PID control using external offsets (torch height control)
+
+Usage:
+  1) Estop OFF  (F1)
+  2) Machine ON (F2)
+  3) HOME All   (Ctrl-Home)
+  4) Run        (R)
+
+A torch height measurement is simulated with a single-pole low-pass filter.
+
+A number of hal pins are made available with simple sim_pin guis for tuning and testing.
+
+The simulated torch height controller frequency response is set by the hal pin:
+  torch-height.gain
+The nominal gain setting of 0.0609 emulates a low pass filter with a 10Hz cutoff frequency.
+(See the man page for the low pass component)
+
+The PID gains are set by the hal pins:
+  zo.pgain
+  zo.igain
+  zo.dgain
+
+The PERTURB On/Off buttons control a signal generator that alters the requested torch-volts.
+The introduced perturbations are useful for tuning the PID settings and may be used when the program is running or paused.
+
+Hal pins for the perturbing signal generator and for ini velocity and accceleration items are:
+  ini.z.max_velocity
+  ini.z.max_acceleration
+  sig.frequency
+  sig.amplitude
+  E:sel0, E:sel1
+    two bit code to select sig function:
+    00 sine
+    01 square
+    10 triangle
+    11 sawtooth

@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Example display of external offsets
+-->
+<pyvcp>
+  <vbox>
+     <relief>"ridge"</relief>
+     <bd>5</bd>
+    <label>
+      <text>"hpid test"</text>
+      <font>"bold"</font>
+    </label>
+    <vbox>
+      <relief>"sunken"</relief>
+      <bd>3</bd>
+
+      <hbox>
+        <number>
+          <halpin>"feedback-f"</halpin>
+          <format>"+11.1f"</format>
+          <width>"11"</width>
+          <bg>"black"</bg>
+          <fg>"gold"</fg>
+          <font>"bold"</font>
+        </number>
+      </hbox>
+
+      <hbox>
+        <label>
+          <padx>0</padx>
+          <font>"monospace"</font>
+        </label>
+        <led>
+          <halpin>"eoffset-limited"</halpin>
+            <size>15</size>
+            <on_color>"red"</on_color>
+            <off_color>"#d9d9d9"</off_color>
+        </led>
+        <label>
+          <text>" Offset Limit"</text>
+          <anchor>"w"</anchor>
+        </label>
+      </hbox>
+
+      <hbox>
+        <label>
+          <padx>0</padx>
+          <font>"monospace"</font>
+        </label>
+          <led>
+          <halpin>"eoffset-enable"</halpin>
+           <size>15</size>
+           <on_color>"gold"</on_color>
+           <off_color>"#d9d9d9"</off_color>
+         </led>
+         <label>
+           <text>" OffsetOn"</text>
+           <anchor>"w"</anchor>
+         </label>
+      </hbox>
+
+      <hbox>
+        <label>
+          <padx>0</padx>
+          <font>"monospace"</font>
+        </label>
+          <led>
+          <halpin>"eoffset-active"</halpin>
+           <size>15</size>
+           <on_color>"gold"</on_color>
+           <off_color>"#d9d9d9"</off_color>
+         </led>
+         <label>
+           <text>" OffsetActive"</text>
+           <anchor>"w"</anchor>
+         </label>
+      </hbox>
+
+      <hbox>
+        <label>
+          <padx>0</padx>
+          <font>"monospace"</font>
+        </label>
+          <led>
+          <halpin>"paused"</halpin>
+           <size>15</size>
+           <on_color>"springgreen"</on_color>
+           <off_color>"#d9d9d9"</off_color>
+         </led>
+         <label>
+           <text>" Paused"</text>
+           <anchor>"w"</anchor>
+         </label>
+      </hbox>
+
+      <hbox>
+        <label>
+          <padx>0</padx>
+          <font>"monospace"</font>
+        </label>
+          <led>
+          <halpin>"torch-is-on"</halpin>
+           <size>15</size>
+           <on_color>"cyan"</on_color>
+           <off_color>"#d9d9d9"</off_color>
+         </led>
+         <label>
+           <text>" TorchOn"</text>
+           <anchor>"w"</anchor>
+         </label>
+      </hbox>
+
+      <vbox>
+        <relief>"sunken"</relief>
+        <bd>2</bd>
+        <label>
+          <text>"PERTURB" </text>
+        </label>
+        <hbox>
+          <button>
+            <halpin>"torch-start"</halpin>
+            <text>"On"</text>
+            <width>"3"</width>
+            <bd>3</bd>
+          </button>
+          <button>
+            <halpin>"torch-stop"</halpin>
+            <text>"Off"</text>
+            <width>"3"</width>
+            <bd>3</bd>
+          </button>
+        </hbox>
+        <hbox>
+          <label>
+            <padx>0</padx>
+            <font>"monospace"</font>
+          </label>
+            <led>
+            <halpin>"perturb-is-on"</halpin>
+             <size>15</size>
+             <on_color>"red"</on_color>
+             <off_color>"#d9d9d9"</off_color>
+           </led>
+           <label>
+             <text>" Perturbed"</text>
+             <anchor>"w"</anchor>
+           </label>
+        </hbox>
+      </vbox>
+
+<!--
+      <hbox>
+        <label>
+          <anchor>"w"</anchor>
+          <text>" fnum:"</text>
+          <font>"bold"</font>
+        </label>
+        <scale>
+          <font>"monospace"</font>
+          <width>"10"</width>
+          <halpin>"fnum"</halpin>
+          <resolution>1</resolution>
+          <orient>VERTICAL</orient>
+          <initval>0</initval>
+          <min_>0</min_>
+          <max_>2</max_>
+          <param_pin>1</param_pin>
+        </scale>
+      </hbox>
+-->
+    </vbox>
+  </vbox>
+</pyvcp>

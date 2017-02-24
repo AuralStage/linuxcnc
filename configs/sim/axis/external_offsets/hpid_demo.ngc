@@ -1,0 +1,46 @@
+;Notes
+;  spindle hal pins used to control torch
+           #<len> =   2
+    #<pierce_hgt> =   0.080
+       #<cut_hgt> =   0.080
+  #<pierce_delay> =   0
+      #<safe_hgt> =   0.100
+#<torch-setpoint> =  80
+     #<feed_rate> = 100
+    #<pause_secs> =   1
+            #<ct> =   0
+           #<rpt> = 100
+
+G20          ;Units: Inches
+G40          ;Cancel Cutter Comp
+G90          ;Absolute Mode
+G64 P0.005   ;Continuous mode + path tolerance
+
+o<rpt> repeat [#<rpt>]
+         M111 ;clear notifications
+         #<ct> = [#<ct> + 1]
+         G0 X0 Y0 Z#<safe_hgt>
+         M68 E0 Q#<torch-setpoint>
+         F#<feed_rate>
+         ;-----------------------------------------
+         ; touchoff actions omitted for simulation:
+         ;   probe to surface etc.
+         G1 Z#<pierce_hgt>
+         M3 S1 ;start torch & enable height_pid
+         ; skip wait for sim:
+         ;   M55 P0 L1 Q5 ;wait for torch-arc-ok
+         ;   G4 P#<pierce_delay>
+         ;   G1 Z#<cut_height>
+         ;-----------------------------------------
+         G1 X #<len> Y 0
+         G1 X #<len> Y #<len>
+         G1 X 0      Y #<len>
+         G1 X 0      Y 0
+         M68 E0 Q0 ;torch-volts 0
+         M5        ;torch off
+         G0 Z#<safe_hgt>
+         (debug, finish #<ct>)
+         G4 P#<pause_secs>
+o<rpt> endrepeat
+
+M2
